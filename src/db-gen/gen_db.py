@@ -45,7 +45,7 @@ class gendb():
             
             
     def gen_workers(self, special:dbtypes.Specializaion):
-        first, last = random.randint(0, 1000), random.randint(0, 1000)
+        first, last = random.randint(0, len(self.NAMES)), random.randint(0, len(self.NAMES))
         firstname, lastname = self.NAMES[first], self.NAMES[last]
         email = firstname[0] + lastname[0:3] + str(first) + "@email.com"
         campus = self.BUILDINGS.keys[random.randint(0,2)]
@@ -53,7 +53,7 @@ class gendb():
         return dbtypes.Worker(email, firstname, lastname, special, campus)
 
     def gen_users(self):
-        first, last = random.randint(0, 1000), random.randint(0, 1000)
+        first, last = random.randint(0, len(self.NAMES)), random.randint(0, len(self.NAMES))
         firstname, lastname = self.NAMES[first], self.NAMES[last]
         email = firstname[0] + lastname[0:3] + str(first) + "@email.com"
         
