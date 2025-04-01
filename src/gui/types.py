@@ -1,5 +1,11 @@
 import time
 
+class Specializaion:
+    def __init__(self, specialization, description:str=None):
+        self.id = -1
+        self.specialization = specialization
+        self.description = description
+
 class Status:
     def __init__(self, status:str, description:str=None):
         self.id = -1
@@ -35,7 +41,7 @@ class User:
         self.lastname = lastname
         
 class Worker:
-    def __init__(self, email:str, firstname:str=None, lastname:str=None, specialization:str=None, campus:Campus=None):
+    def __init__(self, email:str, firstname:str=None, lastname:str=None, specialization:Specializaion=None, campus:Campus=None):
         self.id = -1
         self.email = email
         self.firstname = firstname

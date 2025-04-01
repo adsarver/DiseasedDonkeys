@@ -44,11 +44,10 @@ class gendb():
             NAMES = file.readlines(-1)
             
             
-    def gen_workers(self):
+    def gen_workers(self, special:dbtypes.Specializaion):
         first, last = random.randint(0, 1000), random.randint(0, 1000)
         firstname, lastname = self.NAMES[first], self.NAMES[last]
         email = firstname[0] + lastname[0:3] + str(first) + "@email.com"
-        special = self.SPECIALIZATIONS[random.randint(0, 3)]
         campus = self.BUILDINGS.keys[random.randint(0,2)]
         
         return dbtypes.Worker(email, firstname, lastname, special, campus)
@@ -89,4 +88,7 @@ class gendb():
     
     def init_statuses(self):
         return [dbtypes.Status(name) for name in self.STATUS]
+    
+    def init_specials(self):
+        return [dbtypes.Specializaion(name) for name in self.SPECIALIZATIONS]
             
