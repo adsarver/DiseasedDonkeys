@@ -114,16 +114,3 @@ class gendb():
             
         for i in range(50):
             requests.append(self.gen_request(users, workers, list(rooms.values())))
-        
-        
-        print(status[0])
-        print(special[0])
-        print(campus_map["campus"][0])
-        print(campus_map["building"][0])
-        print(list(rooms.values())[0])
-        print(users[0])
-        print(workers[0])
-        print(requests[0])
-
-db = gendb()
-db.generate()
