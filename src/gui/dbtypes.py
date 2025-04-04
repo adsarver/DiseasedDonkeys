@@ -62,8 +62,8 @@ class Room:
     def __init__(self, building:Building, name:str=None, type:str=None):
         self.id = -1
         self.building = building
-        self.name = name
-        self.type = type
+        self.name = name.rstrip()
+        self.type = type.rstrip()
         
     def __str__(self):
         string =   "| Room\n"
@@ -76,7 +76,7 @@ class Room:
 class User:
     def __init__(self, email:str, firstname:str=None, lastname:str=None):
         self.id = -1
-        self.email = email
+        self.email = email.rstrip()
         self.firstname = firstname.rstrip()
         self.lastname = lastname.rstrip()
         
@@ -93,7 +93,7 @@ class User:
 class Worker:
     def __init__(self, email:str, firstname:str=None, lastname:str=None, specialization:Specializaion=None, campus:Campus=None):
         self.id = -1
-        self.email = email
+        self.email = email.rstrip()
         self.firstname = firstname.rstrip()
         self.lastname = lastname.rstrip()
         self.specialization = specialization
@@ -118,7 +118,7 @@ class Request:
         self.user = user
         self.reqtime = reqtime
         self.assignee = assignee
-        self.description = description
+        self.description = description.rstrip()
         self.comptime = comptime
         self.room = room
         
