@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-
+from ddsql import *
 from sqlalchemy import URL, create_engine
 from sqlalchemy.orm import sessionmaker
 import dbtypes
@@ -44,12 +44,12 @@ class gendb():
             "COMPLETE"
         ]
         with open("names.txt") as file:
-            self.NAMES = file.readlines(-1)
-            
+            self.NAMES = file.readlines(-1)   
+    
     def gen_worker(self, amount = 20):
         print("Generating workers...")
-        campuses = self.session.query(dbtypes.Campus).all()
-        speclist = self.session.query(dbtypes.Specializaion).all()
+        campuses = self.dbsql.query_all(dbtypes.Campus)
+        speclist = self.dbsql.query_all(dbtypes.Specializaion)
         
         for _ in range(amount):
             first, last = random.randint(0, len(self.NAMES) - 1), random.randint(0, len(self.NAMES) - 1)
@@ -59,8 +59,8 @@ class gendb():
             special = speclist[random.randint(0,len(speclist) - 1)]
             
             worker = dbtypes.Worker(email=email, firstname=firstname, lastname=lastname, specialization=special, primary_campus=campus)
-            self.session.add(worker)
-        self.session.commit()
+            self.dbsql.create_entry(worker)
+
 
     def gen_user(self, amount=20):
         print("Generating users...")
@@ -70,16 +70,16 @@ class gendb():
             email = firstname[0] + lastname[0:3] + str(first) + "@email.com"
             
             user = dbtypes.User(email=email, firstname=firstname, lastname=lastname)
-            self.session.add(user)
-        self.session.commit()
+            self.dbsql.create_entry(user)
+
 
     def gen_request(self, amount=50):
         print("Generating requests...")
         for _ in range(amount):
-            users = self.session.query(dbtypes.User).all()
-            workers = self.session.query(dbtypes.Worker).all()
-            rooms = self.session.query(dbtypes.Room).all()
-            statuses = self.session.query(dbtypes.Status).all()
+            users = self.dbsql.query_all(dbtypes.User)
+            workers = self.dbsql.query_all(dbtypes.Worker)
+            rooms = self.dbsql.query_all(dbtypes.Room)
+            statuses = self.dbsql.query_all(dbtypes.Status)
             
             status = statuses[random.randint(0, 2)]
             user = users[random.randint(0,len(users) - 1)]
@@ -87,62 +87,67 @@ class gendb():
             room = rooms[random.randint(0,len(rooms) - 1)]
             
             req = dbtypes.Request(status = status, user = user, reqtime=datetime.now(), assignee=worker, room=room)
-            self.session.add(req)
-        self.session.commit()
+            self.dbsql.create_entry(req)
+
         
     
     def gen_rooms(self):
         print("Generating rooms...")
-        buildings = self.session.query(dbtypes.Building).all()
+        buildings = self.dbsql.query_all(dbtypes.Building)
         for building in buildings:
             for floor in range(100, 500, 100):
                 for roomnum in range(floor, floor + 11):
                     room = dbtypes.Room(building_id=building.id, building=building, name=roomnum)
-                    self.session.add(room)
-        self.session.commit()            
+                    self.dbsql.create_entry(room)
+            
     
     def init_campuses(self):   
         print("Generating campuses...")     
         for campus in self.BUILDINGS.keys():
             address = str(random.randint(1, 2000)) + " " + self.ADDRESS
             campus = dbtypes.Campus(name=campus, address=address)
-            self.session.add(campus)
-        self.session.commit()
+            self.dbsql.create_entry(campus)
+
     
     def init_buildings(self):
         print("Generating buildings...")
-        campuses = self.session.query(dbtypes.Campus).all()
-        for campus in campuses:            
+        campuses = self.dbsql.query_all(dbtypes.Campus)
+        for campus in campuses:
+
             for name in self.BUILDINGS[campus.name]:
                 address = str(random.randint(1, 2000)) + " " + self.ADDRESS
                 building = dbtypes.Building(campus_id=campus.id, campus=campus, address=address, name=name)
-                self.session.add(building)
-        self.session.commit()
+                self.dbsql.create_entry(building)
+
     
     def init_statuses(self):
         print("Generating statuses...")
         for name in self.STATUS:
             status = dbtypes.Status(status=name)
-            self.session.add(status)
-        self.session.commit()
+            self.dbsql.create_entry(status)
+
     
     def init_specials(self):
         print("Generating specializations...")
         for name in self.SPECIALIZATIONS:
             spec = dbtypes.Specializaion(specialization=name)
-            self.session.add(spec)
-        self.session.commit() 
-               
-    def generate(self, session):
-        self.session = session
-        if len(self.session.query(dbtypes.Status).all()) == 0: self.init_statuses()
-        if len(self.session.query(dbtypes.Specializaion).all()) == 0: self.init_specials()
-        if len(self.session.query(dbtypes.Campus).all()) == 0: self.init_campuses()
-        if len(self.session.query(dbtypes.Building).all()) == 0: self.init_buildings()
-        if len(self.session.query(dbtypes.Room).all()) == 0: self.gen_rooms()   
-        if len(self.session.query(dbtypes.User).all()) == 0: self.gen_user()
-        if len(self.session.query(dbtypes.Worker).all()) == 0: self.gen_worker()
-        if len(self.session.query(dbtypes.Request).all()) == 0: self.gen_request()
+            self.dbsql.create_entry(spec)
+         
+        
+    def generate(self, session, engine):
+        self.dbsql = dbsql(session, engine)
+        self.dbsql.create_tables()
+        if len(self.dbsql.query_all(dbtypes.Status)) == 0: self.init_statuses()
+        if len(self.dbsql.query_all(dbtypes.Specializaion)) == 0: self.init_specials()
+        if len(self.dbsql.query_all(dbtypes.Campus)) == 0: self.init_campuses()
+        if len(self.dbsql.query_all(dbtypes.Building)) == 0: self.init_buildings()
+        if len(self.dbsql.query_all(dbtypes.Room)) == 0: self.gen_rooms()   
+        if len(self.dbsql.query_all(dbtypes.User)) == 0: self.gen_user()
+        if len(self.dbsql.query_all(dbtypes.Worker)) == 0: self.gen_worker()
+        if len(self.dbsql.query_all(dbtypes.Request)) == 0: self.gen_request()
+        temp = self.dbsql.query_all(dbtypes.Status)[0]
+        temp.status = "fart"
+        self.dbsql.update_entry(temp)
 
 Base = dbtypes.Base
 
@@ -158,5 +163,5 @@ engine = create_engine(url)
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
-gendb().generate(session)
+gendb().generate(session, engine)
         
