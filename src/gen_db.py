@@ -145,23 +145,4 @@ class gendb():
         if len(self.dbsql.query_all(dbtypes.User)) == 0: self.gen_user()
         if len(self.dbsql.query_all(dbtypes.Worker)) == 0: self.gen_worker()
         if len(self.dbsql.query_all(dbtypes.Request)) == 0: self.gen_request()
-        temp = self.dbsql.query_all(dbtypes.Status)[0]
-        temp.status = "fart"
-        self.dbsql.update_entry(temp)
-
-Base = dbtypes.Base
-
-url = URL.create(
-    "mysql+mysqlconnector",
-    username="root",
-    password="root",  # plain (unescaped) text
-    host="localhost",
-    database="CS440",
-)
-
-engine = create_engine(url)
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-session = Session()
-gendb().generate(session, engine)
         
