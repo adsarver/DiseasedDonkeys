@@ -8,6 +8,7 @@ class dbsql():
         self.session = session
         self.engine = engine
         
+    # Accepts class type and string input
     def query_all(self, cls):
         attrs = dict()
         keys = ""
@@ -39,9 +40,28 @@ class dbsql():
         
     # Get all from cls where case
     def query_where(self, cls, where):
+        attrs = dict()
+        
+        for k in cls.__mapper__.columns.keys():
+            attrs[k] = getattr(cls, k)
+            
         with self.engine.connect() as con:
             statement = text(""f"SELECT * FROM {cls.__tablename__ if type(cls) is not str else cls} WHERE {where}""")
-            return con.execute(statement)
+            rs = con.execute(statement)
+            
+            if rs is None:
+                return []
+
+            found = list()
+            for tup in rs:
+                temp = cls()
+                
+                for i in range(len(list(attrs.keys()))):
+                    key = list(attrs.keys())[i]
+                    setattr(temp, key, tup[i])
+                
+                found.append(temp)
+            return found
         
     def create_entry(self, data):
         attrs = dict()
