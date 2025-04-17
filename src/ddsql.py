@@ -1,3 +1,4 @@
+from typing import Union
 import dbtypes
 from sqlalchemy.sql import text
 from sqlalchemy import Engine
@@ -7,9 +8,9 @@ class dbsql():
     def __init__(self, session:Session, engine:Engine):
         self.session = session
         self.engine = engine
-        
+    
     # Accepts class type and string input
-    def query_all(self, cls):
+    def query_all(self, cls: Union[dbtypes.Mixin, str]):
         attrs = dict()
         keys = ""
         colkeys = ""
@@ -39,7 +40,7 @@ class dbsql():
             return found
         
     # Get all from cls where case
-    def query_where(self, cls, where):
+    def query_where(self, cls: Union[dbtypes.Mixin, str], where: str):
         attrs = dict()
         
         for k in cls.__mapper__.columns.keys():
@@ -63,7 +64,7 @@ class dbsql():
                 found.append(temp)
             return found
         
-    def create_entry(self, data):
+    def create_entry(self, data: dbtypes.Mixin):
         attrs = dict()
         keys = ""
         colkeys = ""
@@ -77,7 +78,7 @@ class dbsql():
             con.execute(statement, attrs)
             con.commit()
                 
-    def update_entry(self, data):
+    def update_entry(self, data: dbtypes.Mixin):
         attrs = dict()
         values = ""
         for k in data.__mapper__.columns.keys():
@@ -91,22 +92,15 @@ class dbsql():
                 con.execute(statement, attrs)
                 con.commit()
                 
-    def delete_entry(self, data):
+    def delete_entry(self, data: dbtypes.Mixin):
         with self.engine.connect() as con:
             statement = text(""f"DELETE FROM {data.__tablename__} WHERE id=\'{data.id}\'""")
             con.execute(statement)
             con.commit()
 
             
-    def create_tables(self):
-        import inspect, sys
-        classes = []
-        for name, obj in inspect.getmembers(sys.modules[dbtypes.__name__]):
-            wrong = ["Mixin", "Base", "Column", "DateTime", "ForeignKey", "Integer", "Text", "UniqueConstraint"]
-            if inspect.isclass(obj) and name not in wrong:
-                classes.append(obj)
-        
-        for clas in classes:
+    def create_tables(self):        
+        for clas in self.classes:
             with self.engine.connect() as con:
                 statement = text(""f"CREATE TABLE {clas.__tablename__} (""")
                 # con.execute(statement)

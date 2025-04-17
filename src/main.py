@@ -22,23 +22,5 @@ session = Session()
 sql = dbsql(session, engine)
 gendb().generate(session, engine) # Generate database if empty
 
-# Print the names of all tables in the database
-def print_all_tables(engine):
-    # To load metdata and existing database schema
-    metadata = MetaData()
-    metadata.reflect(bind=engine)
-    
-    tables = metadata.tables.keys()
-    
-    print("List of tables:")
-    for table in tables:
-        print(table)
-
-# Print all tables in the in-memory database
-print_all_tables(engine)
-
-temp = sql.query_all(dbtypes.Status)[0]
-temp.status = "fart"
-sql.update_entry(temp)
 
 session.close()
