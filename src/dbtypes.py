@@ -123,4 +123,3 @@ class Request(Mixin, Base):
     #     Text += f"| \tRoom: {cls.room.name}\n"
     #     Text += f"| \tDescription: {cls.description}\n"
     #     Text += f"| \tRequested on: {reqtime}\n"
-        
