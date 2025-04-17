@@ -21,7 +21,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 sql = dbsql(session, engine)
 
-
 user = dbtypes.User(email='test@test.com', 
                     firstname='testfirst', 
                     lastname='testlast'
