@@ -12,7 +12,7 @@ host = "localhost"
 port = "3306"
 database = "CS440"
 
-connection_url = f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
+connection_url = f"mysql+mysql://{username}:{password}@{host}:{port}/{database}"
 
 engine = create_engine(connection_url, echo=True)
 Base.metadata.create_all(engine)

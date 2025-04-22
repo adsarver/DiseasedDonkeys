@@ -88,7 +88,6 @@ class dbsql():
             
         with self.engine.connect() as con:
                 statement = text(""f"UPDATE {data.__tablename__} SET {values[:-2]} WHERE ID={data.id}""")
-                print(statement)
                 con.execute(statement, attrs)
                 con.commit()
                 
