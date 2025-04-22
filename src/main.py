@@ -12,7 +12,7 @@ host = "localhost"
 port = "3306"
 database = "CS440"
 
-connection_url = f"mysql+mysql://{username}:{password}@{host}:{port}/{database}"
+connection_url = f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}"
 
 engine = create_engine(connection_url, echo=True)
 Base.metadata.create_all(engine)
@@ -47,7 +47,6 @@ status = dbtypes.Status(status='teststatus')
 sql.create_entry(status)
 
 room = dbtypes.Room(building_id=1, 
-                    building='test', 
                     name='test')
 sql.create_entry(room)
 
