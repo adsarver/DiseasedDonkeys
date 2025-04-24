@@ -3,8 +3,12 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+sql = None
 
 class Mixin:
+    def create(self):
+        return sql.create_entry(self)
+        
     def __repr__(self):
         package = self.__class__.__module__
         class_ = self.__class__.__name__

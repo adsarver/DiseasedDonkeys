@@ -20,6 +20,7 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 sql = dbsql(session, engine)
+dbtypes.sql = sql
 
 user = dbtypes.User(email='test@test.com', 
                     firstname='testfirst', 
@@ -27,39 +28,40 @@ user = dbtypes.User(email='test@test.com',
                     )
 user = sql.create_entry(user)
 
-special = dbtypes.Specialization(specialization='Electrician')
-special = sql.create_entry(special)
+special = dbtypes.Specialization(specialization='Electrician').create()
+# special = sql.create_entry(special)
 
 campus = dbtypes.Campus(name='testcampus', 
                         address='123 test way'
-                        )
-campus = sql.create_entry(campus)
+                        ).create()
+# campus = sql.create_entry(campus)
 
 building = dbtypes.Building(name='testbuilding', 
                         address='123 test way',
                         campus_id=campus.id
-                        )
-building = sql.create_entry(building)
+                        ).create()
+# building = sql.create_entry(building)
 
 worker = dbtypes.Worker(email='test@test.com', 
                         firstname='testfirst', 
                         lastname='testlast', 
                         specialization_id=special.id, 
                         campus_id=campus.id
-                        )
-worker = sql.create_entry(worker)
+                        ).create()
+# worker = sql.create_entry(worker)
 
-status = dbtypes.Status(status='teststatusssss')
-status = sql.create_entry(status)
-print(building)
+status = dbtypes.Status(status='teststatusssss').create()
+# status = sql.create_entry(status)
+
 room = dbtypes.Room(building_id=building.id, 
-                    name='test')
-room = sql.create_entry(room)
+                    name='test').create()
+# room = sql.create_entry(room)
 
 req = dbtypes.Request(status_id=status.id, 
                       user_id=user.id, 
                       reqtime=datetime.now(), 
                       worker_id=worker.id, 
-                      room_id=room.id)
-req = sql.create_entry(req)
+                      room_id=room.id).create()
+# req = sql.create_entry(req)
+print(req)
 session.close()
