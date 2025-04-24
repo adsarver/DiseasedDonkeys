@@ -25,36 +25,41 @@ user = dbtypes.User(email='test@test.com',
                     firstname='testfirst', 
                     lastname='testlast'
                     )
-sql.create_entry(user)
+user = sql.create_entry(user)
 
-special = dbtypes.Specializaion(specialization='Electrician')
-sql.create_entry(special)
+special = dbtypes.Specialization(specialization='Electrician')
+special = sql.create_entry(special)
 
 campus = dbtypes.Campus(name='testcampus', 
                         address='123 test way'
                         )
-sql.create_entry(campus)
+campus = sql.create_entry(campus)
+
+building = dbtypes.Building(name='testbuilding', 
+                        address='123 test way',
+                        campus_id=campus.id
+                        )
+building = sql.create_entry(building)
 
 worker = dbtypes.Worker(email='test@test.com', 
                         firstname='testfirst', 
                         lastname='testlast', 
-                        specialization=special, 
-                        primary_campus=campus
+                        specialization_id=special.id, 
+                        campus_id=campus.id
                         )
-sql.create_entry(worker)
+worker = sql.create_entry(worker)
 
-status = dbtypes.Status(status='teststatus')
-sql.create_entry(status)
-
-room = dbtypes.Room(building_id=1, 
+status = dbtypes.Status(status='teststatusssss')
+status = sql.create_entry(status)
+print(building)
+room = dbtypes.Room(building_id=building.id, 
                     name='test')
-sql.create_entry(room)
+room = sql.create_entry(room)
 
-req = dbtypes.Request(status = status, 
-                      user = user, 
+req = dbtypes.Request(status_id=status.id, 
+                      user_id=user.id, 
                       reqtime=datetime.now(), 
-                      assignee=worker, 
-                      room=room)
-sql.create_entry(req)
-
+                      worker_id=worker.id, 
+                      room_id=room.id)
+req = sql.create_entry(req)
 session.close()

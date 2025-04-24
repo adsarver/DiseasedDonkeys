@@ -25,7 +25,7 @@ class Mixin:
                 continue
             elif key == "lastname":
                 continue
-            elif key == "comptime" and value is None:
+            elif key == "status" and value is None:
                 Text += f"| \tCompleted on: {attrs['status']}\n"
                 continue
             elif key == "comptime" and value is not None: 
@@ -39,7 +39,7 @@ class Mixin:
             
         
 
-class Specializaion(Mixin, Base):
+class Specialization(Mixin, Base):
     __tablename__ = "specialization"
     id = Column(Integer, primary_key=True)
     specialization = Column(Text)
@@ -99,7 +99,7 @@ class Worker(Mixin, Base):
     lastname = Column(Text, nullable=True)
     specialization_id = Column(Integer, ForeignKey('specialization.id'), nullable=True)
     campus_id = Column(Integer, ForeignKey('campus.id'), nullable=True)
-    assignments = relationship("Request", backref="assignee")
+    assignments = relationship("Request", backref="worker")
         
 class Request(Mixin, Base):
     __tablename__ = "request"
@@ -111,15 +111,3 @@ class Request(Mixin, Base):
     description = Column(Text, nullable=True)
     comptime = Column(DateTime, nullable=True)
     room_id = Column(Integer, ForeignKey("room.id"))
-        
-    # @classmethod
-    # def __str__(cls):
-    #     reqtime = cls.reqtime.strftime("%A %d/%m/%Y at %H:%M:%S")
-    #     Text =   "| Request\n"
-    #     Text += f"| \tID: {cls.id}\n"
-    #     Text += f"| \tStatus: {cls.status.status}\n"
-    #     Text += f"| \tRequester: {cls.user.getname()}\n"
-    #     Text += f"| \tAssignee: {cls.assignee.getname()}\n"
-    #     Text += f"| \tRoom: {cls.room.name}\n"
-    #     Text += f"| \tDescription: {cls.description}\n"
-    #     Text += f"| \tRequested on: {reqtime}\n"
