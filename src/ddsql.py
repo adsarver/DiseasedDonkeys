@@ -44,13 +44,11 @@ class dbsql():
     # Get all from cls where case
     def query_where(self, cls: Union[dbtypes.Mixin, str], where: str):
         attrs = dict()
-        print(type(cls))
         
         if type(cls) is str:
             cls = cls.capitalize()
             for name, obj in inspect.getmembers(dbtypes):
                 if name == cls:
-                    print(obj)
                     cls = obj
                     break
                 
@@ -67,7 +65,6 @@ class dbsql():
 
             found = list()
             for tup in rs:
-                print(tup)
                 temp = cls
                 for i in range(len(list(attrs.keys()))):
                     key = list(attrs.keys())[i]
