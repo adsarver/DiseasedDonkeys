@@ -78,26 +78,40 @@ class dbsql():
         keys = ""
         colkeys = ""
         query = ""
+
         for k in data.__mapper__.columns.keys():
             attrs[k] = getattr(data, k)
             keys = keys + k + ", "
             colkeys = colkeys + ":" + k + ", "
-            if attrs[k] is not None:
-                if type(attrs[k]) == str:
-                    query = query + f"{k}=\'{attrs[k]}\' AND "
-                elif type(attrs[k]) == datetime:
-                    attrs[k] = attrs[k].strftime("%Y-%m-%d %H:%M:%S")
-                    query = query + f"{k}=\'{attrs[k]}\' AND "
-                else:
-                    query = query + f"{k}={attrs[k]} AND "
+        
+        temp = attrs.copy()
+        
+        for k, val in temp.items():
+            if "_id" in k and attrs[k] is not None:
+                crit = lambda member: member[0] == k[:-3].capitalize()
+                tableobj = next((member for member in inspect.getmembers(dbtypes) if crit(member)), None)
+                attrs[k[:-3]] = self.query_where(tableobj[1](), f"id={val}")
+            elif "_id" in k:
+                attrs[k] = getattr(data, k[:-3]).id
+        
+        
+        for k, val in attrs.items():
+            if val is not None:
+                if type(val) == str:
+                    query = query + f"{k}=\'{val}\' AND "
+                elif type(val) == datetime:
+                    val = val.strftime("%Y-%m-%d %H:%M:%S")
+                    query = query + f"{k}=\'{val}\' AND "
+                elif not isinstance(val, dbtypes.Mixin) and not isinstance(val, list):
+                    query = query + f"{k}={val} AND "
         
         with self.engine.connect() as con:
             statement = text(f"INSERT INTO {data.__tablename__}({keys[:-2]}) VALUES({colkeys[:-2]})")
             con.execute(statement, attrs)
             con.commit()
             
-            rs = self.query_where(data, query[:-5])[0]
-            return rs[0] if type(rs) == list and len(rs) == 1 else rs
+            rs = self.query_where(data, query[:-5])
+            return rs[0] if type(rs) == list and len(rs) >= 1 else rs
                 
     def update_entry(self, data: dbtypes.Mixin):
         attrs = dict()

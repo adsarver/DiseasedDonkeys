@@ -66,7 +66,7 @@ class Campus(Mixin, Base):
     address = Column(Text)
     code = Column(Text, nullable=True)
     buildings = relationship("Building", backref="campus")
-    workers = relationship("Worker", backref="primary_campus")
+    workers = relationship("Worker", backref="campus")
     __table_args__ = tuple(UniqueConstraint("name"))
         
 class Building(Mixin, Base):

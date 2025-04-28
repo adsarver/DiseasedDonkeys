@@ -41,20 +41,21 @@ building = dbtypes.Building(name='testbuilding',
 worker = dbtypes.Worker(email='test@test.com', 
                         firstname='testfirst', 
                         lastname='testlast', 
-                        specialization_id=special.id, 
-                        campus_id=campus.id
+                        specialization=special, 
+                        campus=campus
                         ).create()
 
 status = dbtypes.Status(status='teststatusssss').create()
 
-room = dbtypes.Room(building_id=building.id, 
+room = dbtypes.Room(building=building, 
                     name='test').create()
 
-req = dbtypes.Request(status_id=status.id, 
-                      user_id=user.id, 
+req = dbtypes.Request(status=status, 
+                      user=user, 
                       reqtime=datetime.now(), 
-                      worker_id=worker.id, 
-                      room_id=room.id).create()
+                      worker=worker, 
+                      room=room).create()
 
-print(req)
+print(req.user)
+print(room.building)
 session.close()
