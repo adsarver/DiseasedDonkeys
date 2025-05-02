@@ -138,7 +138,7 @@ class gendb():
         self.dbsql = dbsql(session, engine)
         self.dbsql.create_tables()
         if len(self.dbsql.query_all(dbtypes.Status)) == 0: self.init_statuses()
-        if len(self.dbsql.query_all(dbtypes.Specializaion)) == 0: self.init_specials()
+        if len(self.dbsql.query_all(dbtypes.Specialization)) == 0: self.init_specials()
         if len(self.dbsql.query_all(dbtypes.Campus)) == 0: self.init_campuses()
         if len(self.dbsql.query_all(dbtypes.Building)) == 0: self.init_buildings()
         if len(self.dbsql.query_all(dbtypes.Room)) == 0: self.gen_rooms()   
