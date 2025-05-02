@@ -49,7 +49,7 @@ class gendb():
     def gen_worker(self, amount = 20):
         print("Generating workers...")
         campuses = self.dbsql.query_all(dbtypes.Campus)
-        speclist = self.dbsql.query_all(dbtypes.Specializaion)
+        speclist = self.dbsql.query_all(dbtypes.Specialization)
         
         for _ in range(amount):
             first, last = random.randint(0, len(self.NAMES) - 1), random.randint(0, len(self.NAMES) - 1)
@@ -130,7 +130,7 @@ class gendb():
     def init_specials(self):
         print("Generating specializations...")
         for name in self.SPECIALIZATIONS:
-            spec = dbtypes.Specializaion(specialization=name)
+            spec = dbtypes.Specialization(specialization=name)
             self.dbsql.create_entry(spec)
          
         
